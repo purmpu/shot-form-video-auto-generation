@@ -88,8 +88,4 @@ $env:NARRATION_VOLUME="1.7"
 
 생성 결과는 `outputs/gemini-qwen_single/rerender-test/final_gemini_qwen_single.mp4`에 저장됩니다.
 
-## 정리 기준
 
-실행에 필요한 파일만 포함했습니다. 프레임 체크 이미지, 중간 실험 결과, 이전 비교 보고서, 임시 xlsx/md/json 파일은 포함하지 않았습니다.
-
-최근 인트로 합성에 사용했던 `KakaoTalk_20260523_163606754.mp4` 원본은 현재 기존 경로에서 찾을 수 없어 복사하지 못했습니다. 대신 최종 인트로 포함 결과물은 `outputs/reference_videos`에 참고용으로 넣었습니다.
