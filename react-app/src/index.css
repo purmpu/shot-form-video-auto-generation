@@ -1,0 +1,142 @@
+:root {
+  --orange: #EB5C04;
+  --gray: #969696;
+  --block: rgba(223,223,223,0.40);
+  --block-solid: #F2F2F2;
+  --white: #fff;
+  --radius: 25px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  font-family: 'Inter', -apple-system, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+  background: #c0c0c0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+#root {
+  width: 402px;
+  min-height: 100vh;
+  background: #fff;
+  position: relative;
+  overflow-x: hidden;
+  box-shadow: 0 4px 40px rgba(0,0,0,0.2);
+}
+
+/* ── Screen wrapper ── */
+.screen {
+  width: 402px;
+  min-height: 874px;
+  position: relative;
+  background: #fff;
+  overflow: hidden;
+}
+
+/* ── Buttons ── */
+.btn-orange {
+  background: var(--orange);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: opacity .15s;
+}
+.btn-orange:active { opacity: .82; }
+.btn-orange:disabled, .btn-gray { background: var(--gray); }
+
+.btn-gray {
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+/* ── Inputs ── */
+.inp {
+  background: var(--block-solid);
+  border: none;
+  border-radius: var(--radius);
+  font-family: inherit;
+  font-weight: 600;
+  color: #000;
+  outline: none;
+}
+.inp::placeholder { color: rgba(0,0,0,.37); }
+.inp:focus { outline: 2px solid var(--orange); outline-offset: -2px; }
+
+/* ── Yes/No toggle ── */
+.yn-wrap { display: flex; }
+.yn-yes, .yn-no {
+  flex: 1;
+  height: 28px;
+  border: none;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background .15s;
+}
+.yn-yes { background: var(--block-solid); color: #000; border-radius: 25px 0 0 25px; }
+.yn-no  { background: var(--block-solid); color: #000; border-radius: 0 25px 25px 0; }
+.yn-yes.active { background: var(--orange); color: #fff; }
+.yn-no.active  { background: var(--gray);   color: #fff; }
+
+/* ── Option grid button ── */
+.opt-btn {
+  background: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 16px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all .15s;
+  color: #000;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+.opt-btn:active { opacity: .8; }
+.opt-btn.selected { background: var(--orange); color: #fff; box-shadow: none; }
+
+/* ── Modal ── */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.45);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000; padding: 24px;
+}
+.modal-box {
+  background: #fff; border-radius: 20px;
+  padding: 28px 24px 20px;
+  width: 100%; max-width: 320px;
+  text-align: center;
+}
+.modal-title { font-size: 16px; font-weight: 700; margin-bottom: 20px; white-space: pre-line; }
+.modal-actions { display: flex; gap: 10px; }
+.modal-cancel {
+  flex: 1; height: 44px; background: #F2F2F2;
+  border: none; border-radius: 12px;
+  font-size: 15px; font-weight: 600; font-family: inherit; color: #969696; cursor: pointer;
+}
+.modal-confirm {
+  flex: 1; height: 44px; background: var(--orange);
+  border: none; border-radius: 12px;
+  font-size: 15px; font-weight: 700; font-family: inherit; color: #fff; cursor: pointer;
+}
+
+/* ── Animations ── */
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateX(16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.anim-in { animation: fadeSlide .2s ease-out; }
+
+::-webkit-scrollbar { display: none; }

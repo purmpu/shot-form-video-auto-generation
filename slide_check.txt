@@ -1,0 +1,108 @@
+=== Slide 1 ===
+  Style 3  백엔드 파이프라인
+  식당 홍보 숏폼 영상
+  자동 생성 파이프라인
+  시작부터 대사 생성까지 — 전체 흐름 해설
+  VLM: Gemini 2.5 Flash  ·  LLM: Gemini 2.5 Flash  ·  TTS: xAI Grok Voice  ·  영상 처리: ffmpeg / ffprobe
+
+=== Slide 2 ===
+  전체 파이프라인 흐름
+  01
+  초기화
+  API 키 로딩
+  ffmpeg 탐색
+  CostTracker
+  02
+  build_slots()
+  씬 슬롯 구조
+  동적 생성
+  (매장 정보 기반)
+  03
+  Phase 0
+  클립 길이 측정
+  calc_max_chars()
+
+=== Slide 3 ===
+  build_slots()  —  씬 슬롯 동적 구성
+  run_style3_promo.py : 246
+  매장 정보를 기반으로 영상에 들어갈 씬 목록을 동적으로 생성합니다.
+  • store_name  →  가게명
+  • store_location  →  위치
+  • menu_names  →  메뉴 배열
+  • has_cooking  /  has_packaging
+  • has_interior  /  table_count
+  • style  →  seosanam | dudley
+  hook
+  대표 메뉴 (훅)
+  항상
+  매장 정보와 무관하게 생성
+  exterior
+  매장 외부
+
+=== Slide 4 ===
+  Phase 0 — 클립 측정  &amp;  Phase 1 — VLM 프레임 분석
+  Phase 0  —  클립 길이 측정 &amp; 글자수 역산
+  calc_max_chars()
+  TTS_CPS = 4.0
+  TTS_GAP_TARGET = 1.0
+  def calc_max_chars(duration_sec):
+      target = max(1.0, duration_sec - 1.0)
+      return max(8, int(target * 4.0))
+  클립 길이
+  target_sec
+  max_chars
+  3.0 초
+  2.0 초
+  8 자
+  5.0 초
+
+=== Slide 5 ===
+  Phase 2  —  맥락 있는 LLM 대본 생성  ★ 핵심
+  generate_full_script_llm()  run_style3_promo.py : 412
+  Style 1 / 2  —  씬별 개별 호출 (이전 방식)
+  씬 1
+  LLM
+  씬 2
+  LLM
+  씬 3
+  LLM
+  씬 N
+  LLM
+  각 씬이 앞 씬에서
+  뭐라 했는지 모름
+  Style 3  —  전체 씬 한 번에 (현재 방식)
+  씬 1
+
+=== Slide 6 ===
+  글자수 검증  &amp;  폴백 계층
+  run_style3_promo.py : 843
+  LLM 대본 생성 성공?
+  YES
+  NO
+  ≤ max_chars
+  LLM 직접 사용
+  source: llm
+  &gt; max_chars  AND  ≤ 32자
+  완성형이므로 그냥 허용
+  source: llm_over_budget
+  &gt; 32자 (하드 한도 초과)
+  _shorten_with_llm() 호출
+  → LLM 재작성 시도
+  source: llm_shortened
+
+=== Slide 7 ===
+  핵심 파이프라인 — 함수 &amp; 라이브러리
+  클립 파일
+  업로드 영상
+  probe_duration()
+  ffprobe
+  ffprobe
+  calc_max_chars()
+  TTS_CPS=4.0
+  GAP=1.0s
+  Python 내부
+  extract_frame()
+  ffmpeg  -ss 1.0
+  ffmpeg
+  analyze_frame()
+  Gemini 2.5 Flash

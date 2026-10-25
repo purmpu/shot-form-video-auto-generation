@@ -1,0 +1,111 @@
+=== ppt/slides/slide1.xml ===
+  식당 홍보 영상 자동 생성
+  전체 파이프라인  실행 순서
+  STEP 0
+  React →
+  FastAPI
+  STEP 1-2
+  초기화
+  build_slots
+  STEP 3-4
+  Phase 0+1
+  클립측정/VLM
+  STEP 5-6
+
+=== ppt/slides/slide2.xml ===
+  STEP 0
+  React → FastAPI 요청 &amp; 서브프로세스 실행
+  CreateScreen.jsx  →  POST /api/render-style3
+  사용자 &apos;생성&apos; 버튼 클릭
+  fetch POST /api/render-style3
+  body 파라미터:
+    store_name  ·  store_location
+    menu_names (쉼표 구분)
+    has_cooking / has_packaging / has_interior
+    table_count  ·  style (seosanam|dudley)
+    tts_voice  ·  bgm  ·  slot_files
+    headline  ·  subtitle_style
+
+=== ppt/slides/slide3.xml ===
+  STEP 1–2
+  파이프라인 초기화  &amp;  build_slots()  씬 슬롯 생성
+  STEP 1  —  main() 초기화  (run_style3_promo.py)
+  1
+  load_api_key()
+  .env.openrouter 파싱
+  → OPENROUTER_API_KEY 로드
+  2
+  find_ffmpeg_tools()
+  PATH에서 ffmpeg, ffprobe
+  바이너리 경로 탐색
+  3
+
+=== ppt/slides/slide4.xml ===
+  STEP 3–4
+  Phase 0  클립 길이 측정  &amp;  Phase 1  VLM 프레임 분석
+  Phase 0  —  전체 클립 길이 측정 &amp; 글자수 역산   (line 751~768)
+  probe_duration(ffprobe, clip_path)  →  duration: float
+  calc_max_chars(duration)  →  max(8, int((duration - 1.0) * 4.0))
+  TTS_CPS = 4.0자/초  ·  TTS_GAP_TARGET = 1.0초
+  측정 실패시 기본 4.0초 사용
+  클립 길이
+  target_sec
+  max_chars
+  3.0 초
+  2.0 초
+
+=== ppt/slides/slide5.xml ===
+  STEP 5–6
+  Phase 2  LLM 전체 대본 생성  &amp;  씬별 대사 확정
+  generate_full_script_llm()  line 412
+  scene_data_for_llm 구성
+  VLM 6필드 중 2개만 LLM에 전달:
+    · vlm_summary (scene_summary)
+    · vlm_keywords[:5]
+    · max_chars (슬롯별 계산값)
+  단일 LLM 호출 (전체 씬 한번에)
+    모델: google/gemini-2.5-flash
+    temperature=0.4  ·  max_tokens=2048
+  프롬프트 구조:
+
+=== ppt/slides/slide6.xml ===
+  STEP 7
+  Phase 3  TTS 합성  &amp;  2단계 길이 검증  (씬별 루프)
+  1
+  TTS 합성
+  ▶
+  2
+  실측 측정
+  ▶
+  3A
+  재단축 시도
+  ▶
+  3B
+
+=== ppt/slides/slide7.xml ===
+  STEP 7–9
+  render_scene_shorts_reference()  →  concat  →  BGM 믹싱
+  render_scene_shorts_reference()  line 694
+  출력 해상도: 1080 × 1920 (9:16 세로형)
+  검정 캔버스  1080×1920
+  원본 클립  1080×1280  (y=320 오버레이)
+  색보정  eq(saturation/contrast/brightness)
+  헤드라인  drawtext  (상단 y≈155)
+  자막 drawbox  (박스, 하단 y≈1502)
+  자막 drawtext  자동 줄바꿈 ≤34유닛
+  fade=in  0.12초  →  scene_NN.mp4
+  -stream_loop -1  클립 짧아도 duration만큼 자동 반복
+
+=== ppt/slides/slide8.xml ===
+  STEP 10–13
+  마무리  —  포스터 생성  ·  파일 저장  ·  React 완료 전달
+  STEP 10–12  마무리 처리
+  10
+  어그로 인트로 삽입 (선택적)
+  --aggro-intro 파라미터 있을 때만
+  ① 메인 영상 앞에 white fade-in 0.2초
+  ② _prepend_intro(): scale+pad 1080×1920
+     fps=25 · 24000Hz mono 정규화 후 concat
+  11
+  포스터 썸네일 추출
+  ffmpeg -ss 00:00:03.0 -frames:v 1

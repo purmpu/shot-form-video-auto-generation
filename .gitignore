@@ -1,0 +1,18 @@
+# ── API 키 (절대 올리면 안 됨) ──
+.env
+.env.*
+!.env.*.example
+
+# ── 자동 생성 / 설치 폴더 ──
+node_modules/
+__pycache__/
+*.pyc
+react-app/dist/
+
+# ── 개인 로컬 설정 ──
+.claude/settings.local.json
+
+# ── 용량 큰 파일 (GitHub 파일당 100MB 제한) ──
+abc/ffmpeg/
+abc/*/*.MOV
+*.MOV

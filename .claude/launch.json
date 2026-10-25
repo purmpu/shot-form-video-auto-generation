@@ -1,0 +1,18 @@
+﻿{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "shortsform-web",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "uvicorn", "web.app:app", "--host", "0.0.0.0", "--port", "8002"],
+      "port": 8002
+    },
+    {
+      "name": "react-app",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "cwd": "react-app",
+      "port": 5173
+    }
+  ]
+}
