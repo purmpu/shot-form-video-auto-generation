@@ -557,6 +557,6 @@ const doc = new Document({
 });
 
 Packer.toBuffer(doc).then(buf => {
-  fs.writeFileSync("C:\\Users\\hyper\\Downloads\\models\\AI_숏폼_파이프라인_기술설명.docx", buf);
+  fs.writeFileSync(require("path").join(__dirname, "AI_숏폼_파이프라인_기술설명.docx"), buf);
   console.log("Done: AI_숏폼_파이프라인_기술설명.docx");
 });
